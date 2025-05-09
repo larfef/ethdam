@@ -25,7 +25,7 @@ describe("Vault", function() {
 		it("Should store the bet data and update contract state correctly", async function() {
 			const {vault, owner, otherAccount} = await loadFixture(deployVault);
 
-			const matchId = 1;
+			const matchId = 3;
 			const amount = 1000;
 
 			await vault.connect(owner).storeBetData(amount, matchId);

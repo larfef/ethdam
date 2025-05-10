@@ -73,6 +73,41 @@ describe("Vault", function() {
 			).to.be.revertedWith("Bet amount must be greater than zero");
 		});
 
+		it("Should withdraw the correct amount and send it to the correct address", async function() {
+			const { vault, owner, otherAccount } = await loadFixture(deployVault);
+
+			const ownerBal = await hre.ethers.provider.getBalance(owner.address);
+			const amount = BigInt(1000);
+			
+			const tx = await vault.connect(owner).bet(1, 1, {
+				value: amount
+			})
+
+			const receipt1 = await tx.wait();
+
+			const gasUsed = receipt1.gasUsed;
+			const gasPrice = receipt1.gasPrice;
+			const gasCost = gasUsed * gasPrice;
+
+			await vault.connect(otherAccount).bet(1, 2, {
+				value: amount
+			})
+
+			const result = [{matchId: 1, result: 1}];
+
+			const tx2 = await vault.connect(owner).checkWinner(result);
+
+			const receipt2 = await tx2.wait();
+
+			const gasUsed2 = receipt2.gasUsed;
+			const gasPrice2 = receipt2.gasPrice;
+			const gasCost2 = gasUsed2 * gasPrice2;
+
+			const newOwnerBal = await hre.ethers.provider.getBalance(owner.address);
+
+			expect(newOwnerBal).to.be.equal(ownerBal - gasCost - gasCost2 + (BigInt(2) * amount));
+		})
+
 	})
 })
 

@@ -26,22 +26,29 @@ export default async function signTx(txData) {
 
 			console.log("Transaction confirmed:", receipt);
 
-			if (receipt.events) { // For newer ethers.js versions (v5 and above)
-				// Ethers.js often provides a more convenient 'events' array
-				// which already has parsed events for events defined in your contract's ABI.
-				const betEvent = receipt.events.find(event => event.event === "BetEvent");
-		
-				if (betEvent) {
-					console.log("BetEvent emitted (using receipt.events):");
-					console.log("From:", betEvent.args._from);
-					console.log("Match ID:", betEvent.args._matchId.toString());
-					console.log("Team ID:", betEvent.args._teamId.toString());
-					console.log("Amount:", betEvent.args.amount.toString());
+			if (receipt.logs && receipt.logs.length > 0) {
+				let betEventFound = false;
+				for (const log of receipt.logs) {
+
+						const parsedLog = contract.interface.parseLog(log);
+	
+						if (parsedLog && parsedLog.name === "BetEvent") {
+							betEventFound = true;
+							console.log("🎉 BetEvent emitted and parsed successfully!");
+							console.log("  From:", parsedLog.args._from);
+							console.log("  Match ID:", parsedLog.args._matchId.toString());
+							console.log("  Team ID:", parsedLog.args._teamId.toString());
+							console.log("  Amount:", parsedLog.args.amount.toString());
+						}
+				}
+	
+				if (!betEventFound) {
+					console.log("No BetEvent found in the transaction logs for this contract.");
 				}
 			} else {
-				console.log("No logs or events found in the transaction receipt.");
+				console.log("No logs found in the transaction receipt.");
 			}
-		
+	
 		}
 		catch (error) {
 			console.error("Error sending transaction", error);

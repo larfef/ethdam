@@ -91,6 +91,11 @@ match_data = [
     },
 ]
 
+@app.route('/api/matches', methods=['GET'])
+def get_matches():
+    app.logger.info("Fetching match data")
+    return jsonify(match_data)
+
 @app.route('/api/chat', methods=['POST'])
 def chat():
     user_message = request.json.get('message')
@@ -105,7 +110,7 @@ def chat():
     The user has asked: "{user_message}"
     Respond to the user's query in the following way : check the data and with your own criterias
     find the best answer
-    to the users quesry , try to keep the answers relatively short and to the point , do not 
+    to the users quesry , try to keep the answers relatively short and to the point , do not
     give data details execpt if the user asked for. Be verbose and the most human like possible.
     avoid giving long data explanations and go for more natural answers.
     Please also act as a front desk for our app so do not only focus on the pure data if the player greets

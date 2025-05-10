@@ -8,7 +8,9 @@ contract Vault is Ownable {
 
 	mapping (uint256 => Bet[]) bets;
 
-	uint256 private _numWin = 0;
+	event BetEvent(address indexed _from, uint256 _matchId, uint256 _teamId,
+		uint256 amount);
+
 
 	constructor(address initialOwner) Ownable(initialOwner) {}
 
@@ -16,6 +18,7 @@ contract Vault is Ownable {
 		require(msg.value > 0, "Bet amount must be greater than 0");
 
 		_storeBetData(msg.value, matchId, teamId);
+		emit BetEvent(msg.sender, matchId, teamId, msg.value);
 	}
 
 	function _storeBetData(uint256 amount, uint256 matchId, uint256 teamId) internal {
@@ -29,24 +32,19 @@ contract Vault is Ownable {
 		matchBets.push(newBet);
 	}
 
-	function checkWinner(Result[] memory results) public {
+	// function checkWinner(Result[] memory results) public {
 		
-		for (uint256 i = 0; i < results.length; ++i) {
+	// 	for (uint256 i = 0; i < results.length; ++i) {
 			
-			Result memory current = results[i];
+	// 		Result memory current = results[i];
 
-			for (uint256 j = 0; j < bets[current.matchId].length; ++j) {
+	// 		for (uint256 j = 0; j < bets[current.matchId].length; ++j) {
 
-				if (bets[current.matchId][j].result == current.result) {
-					++_numWin;
-				}
-			}
-		}
-	}
-
-	function getNumWin() public view returns (uint256) {
-		return _numWin;
-	}
+	// 			if (bets[current.matchId][j].result == current.result) {
+	// 			}
+	// 		}
+	// 	}
+	// }
 
 	function getBets(uint256 matchId) public view returns (Bet[] memory) {
 		return bets[matchId];

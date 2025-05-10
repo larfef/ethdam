@@ -48,7 +48,8 @@ const Button = () => {
 					 type="number"
 					 id="betAmount"
 					 ref={ref}
-					 defaultValue="0.01"
+					 defaultValue="0"
+					 min="0.01"
 					 disabled={updatingContract}
 					 placeholder="Enter bet amount"
 					/>

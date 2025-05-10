@@ -2,9 +2,9 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS  # For handling Cross-Origin Requests (important for local development)
 import google.generativeai as genai
 import logging
+import os
 
-# Replace with your actual API key
-genai.configure(api_key='AIzaSyB3dZ1tpzyBmkffGjFWTCa99yXdk4CSa8k')
+genai.configure(api_key=os.getenv("TOKEN"))
 model = genai.GenerativeModel('gemini-2.0-flash')
 
 app = Flask(__name__)

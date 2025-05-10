@@ -115,7 +115,7 @@ function App() {
             {chatLog.map((msg, index) => (
               <div
                 key={index}
-                className={`mb-2 p-3 rounded-t-xl-lg break-words opa ${
+                className={`mb-2 p-3 rounded-t-xl-lg opacity-100 break-words transition duration-1000 ${
                   msg.user
                     ? "bg-blue-600 text-white self-end"
                     : "bg-gray-700 text-gray-300 self-start"

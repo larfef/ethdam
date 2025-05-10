@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "../index.css";
 
-// import Button from './components/Button';
+import Button from "./components/Button";
 import Menu from "./components/menu";
 // import VaultArtifact from "../../artifacts/contracts/Vault.sol/Vault.json";
 // import {ethers} from "ethers";
@@ -102,6 +102,9 @@ function App() {
 	justify-center items-center flex flex-col"
     >
       <Menu /> {/* Assuming you have a Menu component */}
+      <div className="text-white">
+        <Button />
+      </div>
       <h1 className="text-white text-3xl font-bold mb-8 tracking-wide uppercase">
         Esports Bet AI Assistant
       </h1>

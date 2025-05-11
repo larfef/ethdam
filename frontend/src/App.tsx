@@ -42,7 +42,7 @@ function App() {
       setLoadingMatches(true); // Set loading to true when fetching starts
       await sleep(3000);
       try {
-        const response = await fetch("http://127.0.0.1:5000/api/matches");
+        const response = await fetch(`${import.meta.env.VITE_ROFL_ADDRESS}/api/matches`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -70,7 +70,7 @@ function App() {
     setUserInput("");
 
     try {
-      const response = await fetch("http://84.255.245.194:5000/api/chat", {
+      const response = await fetch(`${import.meta.env.VITE_ROFL_ADDRESS}/api/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

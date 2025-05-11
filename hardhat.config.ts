@@ -21,6 +21,7 @@ const config: HardhatUserConfig = {
       accounts,
     },
     "sapphire-testnet": {
+			//0xeF919280728e2f78fe04F5813134616Fa276Dd12
       url: "https://testnet.sapphire.oasis.io",
       accounts,
       chainId: 0x5aff,

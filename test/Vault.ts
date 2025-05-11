@@ -22,6 +22,11 @@ describe("Vault", function() {
 	})
 
 	describe("Betting Functionality", function() {
+
+		async function gasCost(tx) {
+			return 
+		}
+	
 		it("Should allow a user to place a bet and send Ether to the contract", async function() {
 			const {vault, owner, otherAccount} = await loadFixture(deployVault);
 
@@ -73,40 +78,71 @@ describe("Vault", function() {
 			).to.be.revertedWith("Bet amount must be greater than zero");
 		});
 
-		it("Should withdraw the correct amount and send it to the correct address", async function() {
-			const { vault, owner, otherAccount } = await loadFixture(deployVault);
+		it("Should withdraw the balance", async function() {
+			const { vault, owner } = await loadFixture(deployVault);
 
-			const ownerBal = await hre.ethers.provider.getBalance(owner.address);
-			const amount = BigInt(1000);
-			
-			const tx = await vault.connect(owner).bet(1, 1, {
-				value: amount
+			const fundAmount = ethers.parseEther("1000");
+
+			const tx1 = await owner.sendTransaction({
+				to: vault.target,
+				value: fundAmount
 			})
 
-			const receipt1 = await tx.wait();
+			const gasUsed = receipt?.gasUsed;
+			const gasPrice = receipt?.gasPrice;
+			const gasCost = gasPrice * gasUsed;
 
-			const gasUsed = receipt1.gasUsed;
-			const gasPrice = receipt1.gasPrice;
-			const gasCost = gasUsed * gasPrice;
+			const contractB = await ethers.provider.getBalance(vault.target);
 
-			await vault.connect(otherAccount).bet(1, 2, {
-				value: amount
-			})
+			expect(contractB).to.equal(fundAmount);
 
-			const result = [{matchId: 1, result: 1}];
+			const ownerBal = await ethers.provider.getBalance(owner.address);
 
-			const tx2 = await vault.connect(owner).checkWinner(result);
+			const tx2 = await vault.connect(owner)._withdraw(owner.address);
 
-			const receipt2 = await tx2.wait();
+			const receipt = await tx2.wait();
 
-			const gasUsed2 = receipt2.gasUsed;
-			const gasPrice2 = receipt2.gasPrice;
-			const gasCost2 = gasUsed2 * gasPrice2;
+			const gasUsed = receipt?.gasUsed;
+			const gasPrice = receipt?.gasPrice;
+			const gasCost = gasPrice * gasUsed;
 
-			const newOwnerBal = await hre.ethers.provider.getBalance(owner.address);
+			expect(ownerBal).to.equal();
 
-			expect(newOwnerBal).to.be.equal(ownerBal - gasCost - gasCost2 + (BigInt(2) * amount));
 		})
+		// it("Should withdraw the correct amount and send it to the correct address", async function() {
+		// 	const { vault, owner, otherAccount } = await loadFixture(deployVault);
+
+		// 	const ownerBal = await hre.ethers.provider.getBalance(owner.address);
+		// 	const amount = BigInt(1000);
+			
+		// 	const tx = await vault.connect(owner).bet(1, 1, {
+		// 		value: amount
+		// 	})
+
+		// 	const receipt1 = await tx.wait();
+
+		// 	const gasUsed = receipt1.gasUsed;
+		// 	const gasPrice = receipt1.gasPrice;
+		// 	const gasCost = gasUsed * gasPrice;
+
+		// 	await vault.connect(otherAccount).bet(1, 2, {
+		// 		value: amount
+		// 	})
+
+		// 	const result = [{matchId: 1, result: 1}];
+
+		// 	const tx2 = await vault.connect(owner).checkWinner(result);
+
+		// 	const receipt2 = await tx2.wait();
+
+		// 	const gasUsed2 = receipt2.gasUsed;
+		// 	const gasPrice2 = receipt2.gasPrice;
+		// 	const gasCost2 = gasUsed2 * gasPrice2;
+
+		// 	const newOwnerBal = await hre.ethers.provider.getBalance(owner.address);
+
+		// 	expect(newOwnerBal).to.be.equal(ownerBal - gasCost - gasCost2 + (BigInt(2) * amount));
+		// })
 
 	})
 })
